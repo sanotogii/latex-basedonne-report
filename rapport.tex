@@ -1,0 +1,1458 @@
+%================================================================
+% Rapport de Fin de Module — Suivi des Interventions Techniques
+% Faculté Polydisciplinaire de Larache (FPL)
+% Filière : DevOps et Cloud Computing
+% Année universitaire : 2025-2026
+%================================================================
+\documentclass[12pt,a4paper,oneside]{report}
+
+%----------------------------------------------------------------
+% Encodage et langue
+%----------------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{lmodern}
+
+%----------------------------------------------------------------
+% Mise en page
+%----------------------------------------------------------------
+\usepackage[
+  top=2.5cm, bottom=2.5cm,
+  left=3cm,  right=2.5cm
+]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{emptypage}
+\usepackage{parskip}
+\setlength{\parindent}{1.5em}
+\setlength{\parskip}{0.4em}
+
+%----------------------------------------------------------------
+% En-têtes et pieds de page
+%----------------------------------------------------------------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\leftmark}
+\fancyhead[R]{\small FPL — Larache}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+%----------------------------------------------------------------
+% Typographie et couleurs
+%----------------------------------------------------------------
+\usepackage{xcolor}
+\definecolor{bleuFPL}{RGB}{0,70,127}
+\definecolor{grisCode}{RGB}{248,248,248}
+\definecolor{bordeaux}{RGB}{128,0,32}
+
+%----------------------------------------------------------------
+% Titres de chapitres
+%----------------------------------------------------------------
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries\color{bleuFPL}}
+  {\chaptertitlename\ \thechapter}{20pt}{\Huge}
+\titlespacing*{\chapter}{0pt}{30pt}{20pt}
+
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{bleuFPL}}
+  {\thesection}{1em}{}
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{bordeaux}}
+  {\thesubsection}{1em}{}
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries}
+  {\thesubsubsection}{1em}{}
+
+%----------------------------------------------------------------
+% Graphiques et figures
+%----------------------------------------------------------------
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\captionsetup{font=small, labelfont=bf}
+
+%----------------------------------------------------------------
+% Tableaux
+%----------------------------------------------------------------
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{colortbl}
+\renewcommand{\arraystretch}{1.3}
+
+%----------------------------------------------------------------
+% Code source
+%----------------------------------------------------------------
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{grisCode},
+  frame=single,
+  framesep=5pt,
+  rulecolor=\color{gray!60},
+  breaklines=true,
+  breakatwhitespace=true,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  numbersep=8pt,
+  keywordstyle=\bfseries\color{bleuFPL},
+  commentstyle=\itshape\color{gray!70},
+  stringstyle=\color{bordeaux},
+  showstringspaces=false,
+  tabsize=2,
+  captionpos=b,
+  literate=
+    {é}{{\'{e}}}1 {è}{{\`{e}}}1 {ê}{{\^{e}}}1 {ë}{{\"e}}1
+    {à}{{\`{a}}}1 {â}{{\^{a}}}1 {î}{{\^{i}}}1 {ô}{{\^{o}}}1
+    {ù}{{\`{u}}}1 {û}{{\^{u}}}1 {ç}{{\c{c}}}1
+}
+
+\lstdefinelanguage{PLSQL}{
+  morekeywords={CREATE,OR,REPLACE,TRIGGER,PROCEDURE,FUNCTION,BEGIN,END,IF,THEN,ELSE,ELSIF,FOR,EACH,ROW,BEFORE,AFTER,UPDATE,INSERT,INTO,SELECT,FROM,WHERE,AND,OR,NOT,NULL,IS,RETURN,COMMIT,ROLLBACK,RAISE,VALUES,SET,DEFAULT,EXCEPTION,WHEN,OTHERS,ON,DELETE,CASCADE,CHECK,IN,UNIQUE,PRIMARY,KEY,FOREIGN,REFERENCES,CONSTRAINT,TABLE,INDEX},
+  sensitive=false,
+  morestring=[b]',
+  morecomment=[l]--,
+  morecomment=[s]{/*}{*/},
+}
+
+%----------------------------------------------------------------
+% Liens hypertexte
+%----------------------------------------------------------------
+\usepackage[
+  colorlinks=true,
+  linkcolor=bleuFPL,
+  citecolor=bordeaux,
+  urlcolor=bleuFPL,
+  pdftitle={Suivi des Interventions Techniques — Rapport de Fin de Module},
+  pdfauthor={Houssam},
+  pdfsubject={Application Oracle APEX — DevOps et Cloud Computing},
+]{hyperref}
+
+%----------------------------------------------------------------
+% Bibliographie
+%----------------------------------------------------------------
+\usepackage[backend=biber,style=ieee,sorting=nyt]{biblatex}
+\addbibresource{references.bib}
+
+%----------------------------------------------------------------
+% Utilitaires
+%----------------------------------------------------------------
+\usepackage{lipsum}
+\usepackage{enumitem}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric,positioning,arrows.meta}
+\usepackage{mdframed}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+
+%----------------------------------------------------------------
+% Boîte de définition / remarque
+%----------------------------------------------------------------
+\newtcolorbox{remarque}{
+  title=Remarque,
+  colback=blue!5!white, colframe=bleuFPL,
+  fonttitle=\bfseries, breakable
+}
+\newtcolorbox{important}{
+  title=Important,
+  colback=red!5!white, colframe=bordeaux,
+  fonttitle=\bfseries, breakable
+}
+
+%================================================================
+\begin{document}
+%================================================================
+
+%----------------------------------------------------------------
+% PAGES LIMINAIRES
+%----------------------------------------------------------------
+\pagenumbering{roman}
+
+%--- PAGE DE GARDE -------------------------------------------
+\begin{titlepage}
+  \centering
+  \vspace*{0.3cm}
+
+  % En-tête institutionnel
+  {\large\bfseries Université Abdelmalek Essaâdi\\[4pt]
+   Faculté Polydisciplinaire de Larache\\[4pt]
+   Département des Sciences et Techniques}\\[0.6cm]
+
+  \rule{\linewidth}{1.5pt}\\[0.3cm]
+  {\small Filière : DevOps et Cloud Computing \hfill Année universitaire : 2025-2026}\\[0.3cm]
+  \rule{\linewidth}{1pt}
+
+  \vspace{1.2cm}
+  {\large Rapport de Fin de Module}\\[0.4cm]
+  \rule{0.5\linewidth}{0.8pt}\\[0.6cm]
+
+  {\Huge\bfseries\color{bleuFPL}
+    Système de Suivi des\\[6pt]
+    Interventions Techniques}\\[0.5cm]
+  {\large\itshape Application Oracle APEX sur environnement virtualisé}
+
+  \vspace{0.8cm}
+  \rule{0.5\linewidth}{0.8pt}
+
+  \vspace{1cm}
+  \begin{tabular}{ll}
+    \textbf{Présenté par :}   & Houssam \\[4pt]
+    \textbf{Module :}         & Bases de Données Avancées \\[4pt]
+    \textbf{Encadrant :}      & \dotfill \\[4pt]
+    \textbf{Date :}           & Mars 2026 \\
+  \end{tabular}
+
+  \vfill
+  \rule{\linewidth}{1.5pt}
+  {\footnotesize FPL Larache — Km 2 Route de Rabat, Larache, Maroc}
+\end{titlepage}
+
+\clearpage
+
+%--- DÉDICACE ------------------------------------------------
+\thispagestyle{empty}
+\vspace*{5cm}
+\begin{flushright}
+  \itshape
+  À mes parents,\\
+  pour leur soutien indéfectible tout au long de ce parcours.\\[1em]
+  À mes enseignants de la FPL Larache,\\
+  pour la qualité de leur encadrement.\\[1em]
+  À tous mes camarades de la filière DevOps et Cloud Computing.
+\end{flushright}
+\clearpage
+
+%--- REMERCIEMENTS -------------------------------------------
+\chapter*{Remerciements}
+\addcontentsline{toc}{chapter}{Remerciements}
+\thispagestyle{fancy}
+
+Je tiens à exprimer mes sincères remerciements à toutes les personnes qui ont contribué, de près ou de loin, à la réalisation de ce projet.
+
+Mes premiers remerciements s'adressent à mon encadrant pédagogique pour ses conseils avisés, sa disponibilité et ses orientations tout au long de la réalisation de ce travail. Sa rigueur intellectuelle et son soutien ont été des éléments déterminants dans l'aboutissement de ce projet.
+
+Je remercie également l'ensemble du corps enseignant de la Faculté Polydisciplinaire de Larache, en particulier les professeurs de la filière DevOps et Cloud Computing, pour la qualité de la formation dispensée et pour avoir su nous transmettre la passion des technologies modernes.
+
+Ma gratitude va aussi à la direction de la Faculté Polydisciplinaire de Larache pour l'infrastructure pédagogique mise à disposition et pour les conditions de travail offertes aux étudiants.
+
+Enfin, je remercie chaleureusement ma famille et mes amis pour leur soutien moral constant, leur patience et leurs encouragements qui m'ont permis de mener à bien ce projet dans les meilleures conditions.
+
+\clearpage
+
+%--- RÉSUMÉ --------------------------------------------------
+\chapter*{Résumé}
+\addcontentsline{toc}{chapter}{Résumé}
+\thispagestyle{fancy}
+
+\textbf{Sujet :} Développement d'un Système de Suivi des Interventions Techniques avec Oracle APEX.
+
+\medskip
+Ce rapport présente la conception et le développement d'une application web de gestion et de suivi des interventions techniques au sein d'un établissement universitaire. Réalisée dans le cadre du module de Bases de Données Avancées de la filière DevOps et Cloud Computing à la Faculté Polydisciplinaire de Larache, cette application s'appuie sur la plateforme Oracle Application Express (APEX) déployée sur un environnement virtualisé Oracle VirtualBox.
+
+Le système permet à trois catégories d'utilisateurs — administrateurs, techniciens et professeurs — d'interagir avec un cycle complet de gestion des interventions techniques. Les professeurs peuvent soumettre des demandes d'intervention, les techniciens les acceptent ou les déclinent et soumettent des rapports détaillés à l'issue de chaque intervention, tandis que les administrateurs disposent d'un tableau de bord centralisé offrant une vue globale sur l'activité.
+
+L'architecture de la base de données a été conçue avec quatre tables principales (\texttt{ROLES}, \texttt{UTILISATEURS}, \texttt{INTERVENTIONS}, \texttt{RAPPORTS}), complétées par un déclencheur et une procédure stockée PL/SQL qui garantissent l'intégrité métier des données. Le contrôle d'accès est implémenté à l'aide des mécanismes natifs d'Oracle APEX, enrichis par des schémas d'autorisation personnalisés.
+
+\medskip
+\textbf{Mots-clés :} Oracle APEX, PL/SQL, gestion des interventions, base de données relationnelle, contrôle d'accès, VirtualBox, DevOps.
+
+\bigskip\bigskip
+\rule{\linewidth}{0.4pt}
+\bigskip
+
+\textbf{Abstract:}
+
+This report presents the design and development of a web-based application for managing and tracking technical interventions within a university setting. Developed as part of the Advanced Databases module in the DevOps and Cloud Computing programme at the Faculté Polydisciplinaire de Larache, the application is built on the Oracle Application Express (APEX) platform deployed on a virtualised Oracle VirtualBox environment.
+
+The system enables three categories of users — administrators, technicians and professors — to interact with a complete technical intervention management workflow. Professors can submit intervention requests, technicians accept or decline them and submit detailed reports upon completion, while administrators have access to a centralised dashboard providing a global overview of activity.
+
+The database architecture comprises four main tables (\texttt{ROLES}, \texttt{UTILISATEURS}, \texttt{INTERVENTIONS}, \texttt{RAPPORTS}), complemented by a PL/SQL trigger and a stored procedure that enforce business data integrity. Access control is implemented using native Oracle APEX mechanisms, enhanced by custom authorisation schemes.
+
+\medskip
+\textbf{Keywords:} Oracle APEX, PL/SQL, intervention management, relational database, access control, VirtualBox, DevOps.
+
+\clearpage
+
+%--- TABLES DES MATIÈRES / FIGURES / TABLEAUX ----------------
+\tableofcontents
+\clearpage
+
+\listoffigures
+\addcontentsline{toc}{chapter}{Liste des figures}
+\clearpage
+
+\listoftables
+\addcontentsline{toc}{chapter}{Liste des tableaux}
+\clearpage
+
+%--- LISTE DES ABRÉVIATIONS ----------------------------------
+\chapter*{Liste des Abréviations}
+\addcontentsline{toc}{chapter}{Liste des Abréviations}
+\thispagestyle{fancy}
+
+\begin{tabular}{@{}p{3.5cm}l@{}}
+  \toprule
+  \textbf{Abréviation} & \textbf{Signification} \\
+  \midrule
+  APEX   & Application Express (Oracle) \\
+  CLOB   & Character Large Object \\
+  DBA    & Database Administrator \\
+  DDL    & Data Definition Language \\
+  DML    & Data Manipulation Language \\
+  FPL    & Faculté Polydisciplinaire de Larache \\
+  HTTP   & HyperText Transfer Protocol \\
+  IDE    & Integrated Development Environment \\
+  MCD    & Modèle Conceptuel de Données \\
+  MLD    & Modèle Logique de Données \\
+  ORDS   & Oracle REST Data Services \\
+  PL/SQL & Procedural Language / Structured Query Language \\
+  SGBD   & Système de Gestion de Base de Données \\
+  SQL    & Structured Query Language \\
+  UAE    & Université Abdelmalek Essaâdi \\
+  UML    & Unified Modeling Language \\
+  URL    & Uniform Resource Locator \\
+  VM     & Virtual Machine \\
+  XE     & Oracle Database Express Edition \\
+  \bottomrule
+\end{tabular}
+
+\clearpage
+
+%================================================================
+% CORPS DU RAPPORT
+%================================================================
+\pagenumbering{arabic}
+
+%================================================================
+\chapter*{Introduction Générale}
+\addcontentsline{toc}{chapter}{Introduction Générale}
+\markboth{Introduction Générale}{}
+%================================================================
+
+Dans un contexte où la transformation numérique touche progressivement tous les secteurs, les établissements d'enseignement supérieur marocains s'inscrivent dans une démarche de modernisation de leurs processus internes. La gestion des interventions techniques — maintenance des équipements informatiques, réparation des infrastructures physiques ou assistance aux utilisateurs — constitue un processus crucial pour le bon fonctionnement d'un établissement universitaire. Or, ce processus reste souvent géré de manière informelle, avec des fiches papier ou de simples échanges verbaux, ce qui engendre des pertes d'informations, des délais de traitement et une absence de traçabilité.
+
+C'est dans ce contexte que s'inscrit le présent projet, réalisé dans le cadre du module de Bases de Données Avancées de la filière DevOps et Cloud Computing à la Faculté Polydisciplinaire de Larache (FPL). L'objectif est de concevoir et de développer une application web complète de suivi des interventions techniques, en s'appuyant sur les technologies Oracle, notamment Oracle Application Express (APEX) et PL/SQL.
+
+Oracle APEX est une plateforme de développement d'applications web de bas code directement intégrée à la base de données Oracle~\cite{oracle_apex}. Elle permet de construire rapidement des interfaces utilisateurs riches tout en tirant parti de la puissance du moteur SQL/PL/SQL~\cite{plsql_programming}. Cette caractéristique en fait un choix particulièrement pertinent dans un cursus mettant en avant les bases de données avancées et les pratiques DevOps~\cite{apex_devops}.
+
+Le système développé s'articule autour de trois profils utilisateurs — administrateur, technicien et professeur —, chacun disposant d'un ensemble de fonctionnalités adaptées à son rôle. Il repose sur une base de données relationnelle soigneusement conçue, enrichie par des objets PL/SQL (déclencheur et procédure stockée) garantissant l'intégrité métier.
+
+\medskip
+\textbf{Structure du rapport}
+
+Ce rapport est organisé en cinq chapitres :
+
+\begin{itemize}[leftmargin=2em]
+  \item Le \textbf{Chapitre 1} présente le contexte général du projet : l'établissement d'accueil, la problématique identifiée, les objectifs visés et la démarche méthodologique adoptée.
+  \item Le \textbf{Chapitre 2} est consacré à l'analyse des besoins, avec la définition des acteurs, des besoins fonctionnels et non fonctionnels, ainsi que les diagrammes de cas d'utilisation.
+  \item Le \textbf{Chapitre 3} expose les choix de conception : modèle entité-association, schéma relationnel et architecture de l'application.
+  \item Le \textbf{Chapitre 4} détaille la réalisation technique : environnement de travail, implémentation de la base de données, développement des pages APEX et mise en œuvre des règles métier.
+  \item Le \textbf{Chapitre 5} présente une démonstration de l'application à travers des captures d'écran annotées.
+\end{itemize}
+
+Le rapport se conclut par un bilan des réalisations et une ouverture vers des perspectives d'amélioration.
+
+%================================================================
+\chapter{Contexte Général du Projet}
+%================================================================
+
+\section{Présentation de l'établissement}
+
+\subsection{La Faculté Polydisciplinaire de Larache}
+
+La Faculté Polydisciplinaire de Larache (FPL) est un établissement d'enseignement supérieur marocain placé sous la tutelle de l'Université Abdelmalek Essaâdi (UAE), dont le siège est à Tétouan. Située au Km 2 de la route de Rabat à Larache, la FPL accueille plusieurs milliers d'étudiants dans des filières variées, allant des sciences exactes et appliquées aux sciences humaines et sociales.
+
+Créée dans le cadre de la politique de régionalisation de l'enseignement supérieur au Maroc, la FPL a pour vocation de rapprocher l'université des bassins de population de la région Tanger-Tétouan-Al Hoceima. Elle propose, entre autres, des licences fondamentales et professionnelles, ainsi que des masters spécialisés répondant aux besoins du marché de l'emploi régional.
+
+\subsection{La filière DevOps et Cloud Computing}
+
+La filière DevOps et Cloud Computing, dans laquelle s'inscrit ce projet, est une formation professionnalisante de niveau master qui vise à former des ingénieurs capables de concevoir, déployer et exploiter des systèmes informatiques modernes. Les enseignements couvrent les domaines suivants :
+
+\begin{itemize}[leftmargin=2em]
+  \item Développement logiciel et génie logiciel ;
+  \item Administration des bases de données (Oracle, PostgreSQL, MySQL) ;
+  \item Conteneurisation et orchestration (Docker, Kubernetes) ;
+  \item Infrastructure cloud (AWS, Azure, GCP) ;
+  \item Intégration et déploiement continus (CI/CD) ;
+  \item Supervision et monitoring des systèmes.
+\end{itemize}
+
+Le module de Bases de Données Avancées, dans le cadre duquel s'inscrit ce projet, porte sur la maîtrise des SGBDs relationnels, la programmation PL/SQL, l'optimisation des requêtes et le développement d'applications de gestion.
+
+\section{Présentation de la problématique}
+
+\subsection{Contexte opérationnel}
+
+Dans un établissement universitaire de la taille de la FPL, les pannes et incidents techniques sont inévitables : défaillances matérielles (imprimantes, postes informatiques, vidéoprojecteurs), problèmes réseau, dysfonctionnements électriques, etc. La prise en charge de ces incidents nécessite l'intervention de personnels techniques qualifiés.
+
+Avant la mise en place d'un système numérique, le processus de signalement et de suivi des interventions reposait sur des modalités informelles :
+
+\begin{itemize}[leftmargin=2em]
+  \item Signalement oral ou téléphonique au responsable technique ;
+  \item Fiches d'intervention papier sans format normalisé ;
+  \item Absence de traçabilité sur les pièces utilisées ou le temps passé ;
+  \item Impossibilité pour les professeurs de suivre l'avancement de leur demande ;
+  \item Aucune vue d'ensemble disponible pour l'administration.
+\end{itemize}
+
+\subsection{Problème identifié}
+
+Cette situation engendre plusieurs dysfonctionnements concrets :
+
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{Perte d'information :} une demande formulée verbalement peut être oubliée ou mal transmise ;
+  \item \textbf{Absence de priorisation :} sans système centralisé, il est difficile d'ordonner les interventions par urgence ;
+  \item \textbf{Manque de transparence :} les professeurs ignorent souvent si leur demande a été prise en charge ;
+  \item \textbf{Difficultés de reporting :} l'administration ne peut pas générer de statistiques sur l'activité technique ;
+  \item \textbf{Absence de mémoire institutionnelle :} aucun historique des interventions passées n'est disponible.
+\end{enumerate}
+
+\section{Objectifs du projet}
+
+L'objectif général de ce projet est de concevoir et de développer un système d'information web permettant de gérer l'ensemble du cycle de vie d'une intervention technique, depuis la demande initiale jusqu'à la clôture et le rapport final.
+
+\subsection{Objectifs spécifiques}
+
+Les objectifs spécifiques sont les suivants :
+
+\begin{itemize}[leftmargin=2em]
+  \item Concevoir une base de données relationnelle robuste intégrant les entités métier pertinentes ;
+  \item Développer une application web multi-rôles avec Oracle APEX ;
+  \item Implémenter des règles métier complexes via PL/SQL (déclencheurs et procédures stockées) ;
+  \item Mettre en place un contrôle d'accès fin basé sur les rôles des utilisateurs ;
+  \item Offrir une interface intuitive adaptée aux différents profils d'utilisateurs ;
+  \item Fournir des indicateurs de performance (KPIs) à destination des administrateurs.
+\end{itemize}
+
+\section{Méthodologie adoptée}
+
+Pour mener à bien ce projet, nous avons adopté une démarche itérative inspirée des méthodes agiles, adaptée au contexte académique. Les grandes étapes sont les suivantes :
+
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{Analyse des besoins :} identification des acteurs, recueil des besoins fonctionnels et non fonctionnels, modélisation UML ;
+  \item \textbf{Conception :} modélisation de la base de données (MCD, MLD), conception de l'architecture de l'application ;
+  \item \textbf{Implémentation :} création des tables et des objets PL/SQL, développement des pages APEX ;
+  \item \textbf{Tests et validation :} vérification des règles métier, des droits d'accès et de la cohérence des données ;
+  \item \textbf{Rédaction :} documentation technique et rédaction du présent rapport.
+\end{enumerate}
+
+%================================================================
+\chapter{Analyse des Besoins}
+%================================================================
+
+\section{Identification des acteurs}
+
+Un acteur représente une entité externe (personne, système) qui interagit avec le système. Trois acteurs principaux ont été identifiés dans ce projet :
+
+\begin{table}[H]
+  \centering
+  \caption{Acteurs du système et leurs attributs}
+  \begin{tabularx}{\linewidth}{@{}l X X@{}}
+    \toprule
+    \textbf{Acteur} & \textbf{Description} & \textbf{Niveau d'accès} \\
+    \midrule
+    Administrateur & Personnel d'administration ayant une vue globale sur toutes les interventions et tous les utilisateurs & Accès complet \\
+    Technicien & Personnel technique chargé d'exécuter les interventions et de rédiger les rapports & Accès à ses propres interventions \\
+    Professeur & Enseignant pouvant soumettre des demandes d'intervention & Accès limité (demandes uniquement) \\
+    \bottomrule
+  \end{tabularx}
+  \label{tab:acteurs}
+\end{table}
+
+\section{Besoins fonctionnels}
+
+\subsection{Gestion des utilisateurs et des rôles}
+
+\begin{itemize}[leftmargin=2em]
+  \item Le système doit gérer trois types de rôles : Administrateur, Technicien et Professeur ;
+  \item Chaque utilisateur est associé à un compte APEX et à un rôle défini en base de données ;
+  \item Un administrateur peut consulter et gérer tous les comptes utilisateurs.
+\end{itemize}
+
+\subsection{Gestion des interventions}
+
+\begin{itemize}[leftmargin=2em]
+  \item Un administrateur peut créer, modifier et clôturer une intervention ;
+  \item Un technicien peut consulter ses propres interventions et mettre à jour leur statut ;
+  \item Un professeur peut soumettre une demande d'intervention en spécifiant le technicien souhaité, la priorité, la localisation et la date de fin prévue ;
+  \item Une intervention peut avoir quatre statuts : \textit{Ouverte}, \textit{En cours}, \textit{Terminée}, \textit{Annulée} ;
+  \item Une intervention a un niveau de priorité parmi : \textit{Basse}, \textit{Moyenne}, \textit{Haute}, \textit{Critique} ;
+  \item Une intervention terminée ne peut pas être rouverte (règle métier contraignante).
+\end{itemize}
+
+\subsection{Gestion des demandes professeurs}
+
+\begin{itemize}[leftmargin=2em]
+  \item Un professeur peut soumettre une demande d'intervention à un technicien spécifique ;
+  \item La demande apparaît dans la liste des demandes en attente du technicien concerné ;
+  \item Le technicien peut accepter ou refuser la demande ;
+  \item En cas d'acceptation, l'intervention passe à l'état \textit{En cours} ;
+  \item En cas de refus, l'intervention passe à l'état \textit{Annulée}.
+\end{itemize}
+
+\subsection{Gestion des rapports}
+
+\begin{itemize}[leftmargin=2em]
+  \item Un technicien peut soumettre un rapport pour toute intervention qui lui est assignée ;
+  \item Le rapport doit contenir un titre, un contenu d'au moins 20 caractères, le temps passé en heures et les pièces utilisées ;
+  \item La soumission d'un rapport met automatiquement l'intervention associée en statut \textit{En cours} si elle était \textit{Ouverte} ;
+  \item Les rapports peuvent avoir trois statuts : \textit{Soumis}, \textit{Validé}, \textit{Rejeté}.
+\end{itemize}
+
+\subsection{Tableau de bord administrateur}
+
+\begin{itemize}[leftmargin=2em]
+  \item L'administrateur dispose d'un tableau de bord présentant des indicateurs clés (KPIs) : total des interventions, interventions ouvertes, interventions en cours, interventions critiques actives ;
+  \item Ces indicateurs sont recalculés à chaque accès à la page.
+\end{itemize}
+
+\section{Besoins non fonctionnels}
+
+\subsection{Sécurité et contrôle d'accès}
+
+\begin{itemize}[leftmargin=2em]
+  \item Chaque page de l'application est protégée par un schéma d'autorisation adapté au rôle de l'utilisateur ;
+  \item Les utilisateurs non authentifiés sont redirigés vers la page de connexion ;
+  \item Aucun utilisateur ne peut accéder aux données d'un autre utilisateur sans autorisation explicite.
+\end{itemize}
+
+\subsection{Intégrité des données}
+
+\begin{itemize}[leftmargin=2em]
+  \item Les contraintes d'intégrité sont implémentées au niveau de la base de données (contraintes \texttt{CHECK}, \texttt{UNIQUE}, \texttt{FOREIGN KEY}) ;
+  \item Les règles métier complexes sont gérées par des objets PL/SQL (déclencheur, procédure stockée).
+\end{itemize}
+
+\subsection{Utilisabilité}
+
+\begin{itemize}[leftmargin=2em]
+  \item L'interface doit être intuitive et ne nécessiter aucune formation préalable ;
+  \item Les statuts et priorités des interventions sont affichés sous forme de badges visuels colorés ;
+  \item Un calendrier permet de visualiser les interventions planifiées.
+\end{itemize}
+
+\subsection{Performance}
+
+\begin{itemize}[leftmargin=2em]
+  \item Des index sont créés sur les colonnes fréquemment utilisées en filtrage (\texttt{TECHNICIEN\_ID}, \texttt{STATUT}) ;
+  \item Les requêtes SQL sont optimisées pour éviter les balayages complets de tables.
+\end{itemize}
+
+\section{Diagrammes de cas d'utilisation}
+
+\subsection{Cas d'utilisation global}
+
+La figure~\ref{fig:ucd-global} représente le diagramme de cas d'utilisation global du système, modélisé en UML~\cite{uml_distilled}.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[font=\small,
+    actor/.style={draw, rectangle, rounded corners=3pt, align=center,
+                  minimum width=2cm, minimum height=0.7cm, fill=gray!10},
+    usecase/.style={draw, ellipse, align=center,
+                    minimum width=2.8cm, minimum height=0.8cm, fill=blue!8},
+    boundary/.style={draw, thick, rounded corners=8pt}
+  ]
+    % Système (boundary)
+    \draw[boundary] (0,0) rectangle (10,9);
+    \node[above] at (5,9) {\textbf{Système de Suivi des Interventions}};
+
+    % Cas d'utilisation
+    \node[usecase] (login)         at (5,8.2)   {S'authentifier};
+    \node[usecase] (listInt)       at (5,7.0)   {Consulter les\\interventions};
+    \node[usecase] (creerInt)      at (2.5,5.5) {Créer une\\intervention};
+    \node[usecase] (demanderInt)   at (7.5,5.5) {Demander une\\intervention};
+    \node[usecase] (traiterDemande) at (5,4.0)  {Traiter une\\demande};
+    \node[usecase] (soumetRap)     at (2.5,2.5) {Soumettre\\un rapport};
+    \node[usecase] (dashboard)     at (7.5,2.5) {Tableau\\de bord};
+    \node[usecase] (calendrier)    at (5,1.0)   {Calendrier};
+
+    % Acteurs
+    \node[actor] (prof)  at (-2.5, 5.5) {Professeur};
+    \node[actor] (tech)  at (-2.5, 3.0) {Technicien};
+    \node[actor] (admin) at (12.5, 4.0) {Administrateur};
+
+    % Relations professeur
+    \draw (prof) -- (login);
+    \draw (prof) -- (demanderInt);
+    \draw (prof) -- (listInt);
+
+    % Relations technicien
+    \draw (tech) -- (login);
+    \draw (tech) -- (traiterDemande);
+    \draw (tech) -- (soumetRap);
+    \draw (tech) -- (listInt);
+    \draw (tech) -- (calendrier);
+
+    % Relations admin
+    \draw (admin) -- (login);
+    \draw (admin) -- (creerInt);
+    \draw (admin) -- (dashboard);
+    \draw (admin) -- (listInt);
+  \end{tikzpicture}
+  \caption{Diagramme de cas d'utilisation global}
+  \label{fig:ucd-global}
+\end{figure}
+
+\subsection{Description textuelle des cas d'utilisation principaux}
+
+\begin{table}[H]
+  \centering
+  \caption{Description du cas d'utilisation « Demander une intervention »}
+  \begin{tabularx}{\linewidth}{@{}l X@{}}
+    \toprule
+    \textbf{Champ} & \textbf{Description} \\
+    \midrule
+    Acteur principal & Professeur \\
+    Précondition & L'utilisateur est authentifié avec le rôle Professeur \\
+    Déclencheur & Le professeur clique sur « Demander une Intervention » \\
+    Scénario nominal & 1. Le professeur remplit le formulaire (titre, description, priorité, technicien, localisation, date prévue) ; 2. Il valide ; 3. Le système crée l'intervention avec \texttt{DEMANDE\_PAR\_PROF = 'Y'} et \texttt{STATUT\_ACCEPTATION = 'En attente'} \\
+    Alternative & Si un champ obligatoire est manquant, une erreur de validation est affichée \\
+    Postcondition & Une nouvelle intervention apparaît dans la liste des demandes en attente du technicien concerné \\
+    \bottomrule
+  \end{tabularx}
+  \label{tab:uc-demander}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \caption{Description du cas d'utilisation « Soumettre un rapport »}
+  \begin{tabularx}{\linewidth}{@{}l X@{}}
+    \toprule
+    \textbf{Champ} & \textbf{Description} \\
+    \midrule
+    Acteur principal & Technicien \\
+    Précondition & L'utilisateur est authentifié ; une intervention lui est assignée \\
+    Déclencheur & Le technicien clique sur « Soumettre un Rapport » \\
+    Scénario nominal & 1. Le technicien saisit le titre, le contenu ($\geq$ 20 caractères), le temps passé et les pièces utilisées ; 2. Il soumet le formulaire ; 3. La procédure \texttt{SOUMETTRE\_RAPPORT} est appelée ; 4. Le rapport est enregistré ; 5. Si l'intervention était \textit{Ouverte}, son statut passe à \textit{En cours} \\
+    Alternative & Si le contenu est vide ou trop court, une erreur est levée (\texttt{ORA-20050}) \\
+    Postcondition & Le rapport est visible dans la liste des rapports de l'intervention \\
+    \bottomrule
+  \end{tabularx}
+  \label{tab:uc-rapport}
+\end{table}
+
+%================================================================
+\chapter{Conception du Système}
+%================================================================
+
+\section{Architecture générale}
+
+L'application s'inscrit dans une architecture \textit{trois tiers} classique~\cite{oracle_db_design}, adaptée au contexte Oracle APEX :
+
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Tier présentation :} le navigateur web de l'utilisateur, accédant à l'application via l'URL \texttt{http://localhost:8080/ords/apex} ;
+  \item \textbf{Tier applicatif :} Oracle APEX, servi par Oracle REST Data Services (ORDS) tournant dans la machine virtuelle VirtualBox ;
+  \item \textbf{Tier données :} Oracle Database XE (Express Edition), hébergeant le schéma \texttt{HR} avec les tables, les vues, les déclencheurs et les procédures stockées.
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[font=\small,
+    tier/.style={draw, rounded corners, minimum width=3.2cm,
+                 minimum height=1cm, align=center},
+    arr/.style={->, thick, >=Stealth}
+  ]
+    \node[tier, fill=blue!10]   (browser) at (0,0)   {Navigateur\\Web};
+    \node[tier, fill=orange!15] (apex)    at (4.5,0) {Oracle APEX\\(ORDS / HTTP)};
+    \node[tier, fill=green!15]  (db)      at (9,0)   {Oracle DB XE\\(Schéma HR)};
+
+    \draw[arr]        (browser) -- node[above]{\footnotesize HTTP}      (apex);
+    \draw[arr]        (apex)    -- node[above]{\footnotesize SQL/PL/SQL} (db);
+    \draw[arr, dashed] (db)    -- ++(0,-1) -| (apex);
+    \draw[arr, dashed] (apex)  -- ++(0,-1.6) -| (browser);
+
+    \node[below=0.1cm of browser, font=\footnotesize] (lb) {Tier Présentation};
+    \node[below=0.1cm of apex,    font=\footnotesize] (la) {Tier Applicatif};
+    \node[below=0.1cm of db,      font=\footnotesize] (ld) {Tier Données};
+  \end{tikzpicture}
+  \caption{Architecture trois tiers de l'application}
+  \label{fig:architecture}
+\end{figure}
+
+\section{Modèle Conceptuel de Données (MCD)}
+
+\subsection{Entités et attributs}
+
+Le modèle conceptuel de données identifie quatre entités principales, en suivant la démarche MERISE~\cite{merise} :
+
+\begin{table}[H]
+  \centering
+  \caption{Entités du modèle conceptuel}
+  \begin{tabularx}{\linewidth}{@{}l X X@{}}
+    \toprule
+    \textbf{Entité} & \textbf{Attributs principaux} & \textbf{Identifiant} \\
+    \midrule
+    ROLES & NOM\_ROLE, DESCRIPTION & ROLE\_ID \\
+    UTILISATEURS & NOM, PRENOM, EMAIL, APEX\_USERNAME, DATE\_CREATION, ACTIF & UTILISATEUR\_ID \\
+    INTERVENTIONS & TITRE, DESCRIPTION, PRIORITE, STATUT, LOCALISATION, DATE\_CREATION, DATE\_FIN\_PREVUE, DATE\_CLOTURE, CREE\_PAR, DEMANDE\_PAR\_PROF, STATUT\_ACCEPTATION & INTERVENTION\_ID \\
+    RAPPORTS & TITRE\_RAPPORT, CONTENU, REDACTEUR, DATE\_SOUMISSION, TEMPS\_PASSE\_H, PIECES\_UTILISEES, STATUT\_RAPPORT & RAPPORT\_ID \\
+    \bottomrule
+  \end{tabularx}
+  \label{tab:entites}
+\end{table}
+
+\subsection{Associations}
+
+Les associations entre entités sont les suivantes :
+
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{POSSEDE} : un \texttt{UTILISATEUR} possède exactement un \texttt{ROLE} (cardinalité 1,1 — 0,N) ;
+  \item \textbf{ASSIGNE\_A} : une \texttt{INTERVENTION} est assignée à exactement un \texttt{UTILISATEUR} (technicien) (cardinalité 1,1 — 0,N) ;
+  \item \textbf{CONCERNE} : un \texttt{RAPPORT} concerne exactement une \texttt{INTERVENTION} (cardinalité 1,1 — 0,N).
+\end{itemize}
+
+\section{Modèle Logique de Données (MLD)}
+
+Le modèle logique de données résulte de la transformation du MCD en schéma relationnel. Les clés étrangères sont matérialisées comme suit :
+
+\medskip
+\texttt{ROLES(\underline{ROLE\_ID}, NOM\_ROLE, DESCRIPTION)}
+
+\medskip
+\texttt{UTILISATEURS(\underline{UTILISATEUR\_ID}, \#ROLE\_ID, NOM, PRENOM, EMAIL, APEX\_USERNAME, DATE\_CREATION, ACTIF)}
+
+\medskip
+\texttt{INTERVENTIONS(\underline{INTERVENTION\_ID}, \#TECHNICIEN\_ID, TITRE, DESCRIPTION, PRIORITE, STATUT, LOCALISATION, DATE\_CREATION, DATE\_FIN\_PREVUE, DATE\_CLOTURE, CREE\_PAR, DEMANDE\_PAR\_PROF, STATUT\_ACCEPTATION)}
+
+\medskip
+\texttt{RAPPORTS(\underline{RAPPORT\_ID}, \#INTERVENTION\_ID, REDACTEUR, TITRE\_RAPPORT, CONTENU, DATE\_SOUMISSION, TEMPS\_PASSE\_H, PIECES\_UTILISEES, STATUT\_RAPPORT)}
+
+\section{Structure des tables Oracle}
+
+\subsection{Table ROLES}
+
+\begin{lstlisting}[language=PLSQL, caption=Création de la table ROLES]
+CREATE TABLE ROLES (
+    ROLE_ID     NUMBER GENERATED BY DEFAULT ON NULL AS IDENTITY
+                    PRIMARY KEY,
+    NOM_ROLE    VARCHAR2(50)  NOT NULL,
+    DESCRIPTION VARCHAR2(200),
+    CONSTRAINT roles_nom_uq UNIQUE (NOM_ROLE)
+);
+\end{lstlisting}
+
+\subsection{Table UTILISATEURS}
+
+\begin{lstlisting}[language=PLSQL, caption=Création de la table UTILISATEURS]
+CREATE TABLE UTILISATEURS (
+    UTILISATEUR_ID  NUMBER GENERATED BY DEFAULT ON NULL AS IDENTITY
+                        PRIMARY KEY,
+    ROLE_ID         NUMBER        NOT NULL,
+    NOM             VARCHAR2(100) NOT NULL,
+    PRENOM          VARCHAR2(100) NOT NULL,
+    EMAIL           VARCHAR2(200) NOT NULL,
+    APEX_USERNAME   VARCHAR2(100) NOT NULL,
+    DATE_CREATION   DATE          DEFAULT SYSDATE,
+    ACTIF           CHAR(1)       DEFAULT 'Y'
+                        CHECK (ACTIF IN ('Y','N')),
+    CONSTRAINT util_email_uq    UNIQUE (EMAIL),
+    CONSTRAINT util_apexname_uq UNIQUE (APEX_USERNAME),
+    CONSTRAINT util_role_fk     FOREIGN KEY (ROLE_ID)
+                                REFERENCES ROLES (ROLE_ID)
+);
+\end{lstlisting}
+
+\subsection{Table INTERVENTIONS}
+
+\begin{lstlisting}[language=PLSQL, caption=Création de la table INTERVENTIONS]
+CREATE TABLE INTERVENTIONS (
+    INTERVENTION_ID    NUMBER GENERATED BY DEFAULT ON NULL AS IDENTITY
+                           PRIMARY KEY,
+    TITRE              VARCHAR2(200) NOT NULL,
+    DESCRIPTION        CLOB,
+    PRIORITE           VARCHAR2(20)  NOT NULL
+                           CHECK (PRIORITE IN ('Basse','Moyenne',
+                                               'Haute','Critique')),
+    STATUT             VARCHAR2(30)  NOT NULL DEFAULT 'Ouverte'
+                           CHECK (STATUT IN ('Ouverte','En cours',
+                                             'Terminee','Annulee')),
+    TECHNICIEN_ID      NUMBER        NOT NULL,
+    DATE_CREATION      DATE          DEFAULT SYSDATE,
+    DATE_FIN_PREVUE    DATE,
+    DATE_CLOTURE       DATE,
+    LOCALISATION       VARCHAR2(500),
+    CREE_PAR           VARCHAR2(100) DEFAULT 'SYSTEM',
+    DEMANDE_PAR_PROF   CHAR(1)       DEFAULT 'N'
+                           CHECK (DEMANDE_PAR_PROF IN ('Y','N')),
+    STATUT_ACCEPTATION VARCHAR2(20)  DEFAULT 'N/A'
+                           CHECK (STATUT_ACCEPTATION IN
+                                  ('N/A','En attente','Acceptee',
+                                   'Refusee')),
+    CONSTRAINT intv_tech_fk FOREIGN KEY (TECHNICIEN_ID)
+                            REFERENCES UTILISATEURS (UTILISATEUR_ID)
+);
+
+CREATE INDEX idx_intv_technicien ON INTERVENTIONS (TECHNICIEN_ID);
+CREATE INDEX idx_intv_statut     ON INTERVENTIONS (STATUT);
+\end{lstlisting}
+
+\subsection{Table RAPPORTS}
+
+\begin{lstlisting}[language=PLSQL, caption=Création de la table RAPPORTS]
+CREATE TABLE RAPPORTS (
+    RAPPORT_ID        NUMBER GENERATED BY DEFAULT ON NULL AS IDENTITY
+                          PRIMARY KEY,
+    INTERVENTION_ID   NUMBER        NOT NULL,
+    REDACTEUR         VARCHAR2(100) NOT NULL,
+    TITRE_RAPPORT     VARCHAR2(300) NOT NULL,
+    CONTENU           CLOB          NOT NULL,
+    DATE_SOUMISSION   DATE          DEFAULT SYSDATE,
+    TEMPS_PASSE_H     NUMBER(5,2),
+    PIECES_UTILISEES  VARCHAR2(1000),
+    STATUT_RAPPORT    VARCHAR2(20)  DEFAULT 'Soumis'
+                          CHECK (STATUT_RAPPORT IN
+                                 ('Soumis','Valide','Rejete')),
+    CONSTRAINT rpt_intv_fk FOREIGN KEY (INTERVENTION_ID)
+                           REFERENCES INTERVENTIONS (INTERVENTION_ID)
+                           ON DELETE CASCADE
+);
+
+CREATE INDEX idx_rpt_intervention ON RAPPORTS (INTERVENTION_ID);
+\end{lstlisting}
+
+\section{Conception des objets PL/SQL}
+
+\subsection{Déclencheur TRG\_INTV\_STATUT}
+
+Ce déclencheur \texttt{BEFORE UPDATE} répond à deux règles métier essentielles :
+
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{Interdiction de réouverture :} une intervention dont le statut est \textit{Terminée} ne peut pas revenir à un statut actif (seul le passage à \textit{Annulée} est autorisé) ;
+  \item \textbf{Clôture automatique :} lorsqu'une intervention passe au statut \textit{Terminée}, la date de clôture est automatiquement renseignée avec la date système.
+\end{enumerate}
+
+\subsection{Procédure SOUMETTRE\_RAPPORT}
+
+Cette procédure stockée encapsule la logique de soumission d'un rapport :
+
+\begin{enumerate}[leftmargin=2em]
+  \item Validation du contenu (au moins 20 caractères significatifs) ;
+  \item Insertion dans la table \texttt{RAPPORTS} avec le rédacteur issu du contexte APEX (\texttt{V('APP\_USER')}) ;
+  \item Mise à jour automatique du statut de l'intervention associée (passage de \textit{Ouverte} à \textit{En cours}).
+\end{enumerate}
+
+\section{Conception de l'application APEX}
+
+\subsection{Structure de navigation}
+
+L'application est organisée autour de dix pages fonctionnelles :
+
+\begin{table}[H]
+  \centering
+  \caption{Pages de l'application et leur accessibilité}
+  \begin{tabularx}{\linewidth}{@{}c X X@{}}
+    \toprule
+    \textbf{Page \#} & \textbf{Nom} & \textbf{Accessibilité} \\
+    \midrule
+    1  & Accueil & Tous les utilisateurs connectés \\
+    3  & Interventions & Tous les utilisateurs connectés (filtrées) \\
+    4  & Formulaire d'intervention & Tous les utilisateurs connectés \\
+    6  & Rapports & Tous les utilisateurs connectés \\
+    7  & Demander une Intervention & Professeurs uniquement \\
+    8  & Demandes en attente & Techniciens uniquement \\
+    9  & Calendrier & Tous les utilisateurs connectés \\
+    10 & Soumettre un Rapport & Tous les utilisateurs connectés \\
+    16 & Tableau de bord Admin & Administrateurs uniquement \\
+    9999 & Page de connexion & Public \\
+    \bottomrule
+  \end{tabularx}
+  \label{tab:pages}
+\end{table}
+
+\subsection{Schémas d'autorisation}
+
+\begin{table}[H]
+  \centering
+  \caption{Schémas d'autorisation APEX}
+  \begin{tabularx}{\linewidth}{@{}l X@{}}
+    \toprule
+    \textbf{Schéma} & \textbf{Portée} \\
+    \midrule
+    \texttt{Administration Rights} & Utilisateurs ayant le rôle Administrateur dans APEX \\
+    \texttt{Contribution Rights} & Tous les utilisateurs authentifiés \\
+    \texttt{Professeur Rights} & Utilisateurs dont le rôle en base est « Professeur » (requête SQL personnalisée) \\
+    \bottomrule
+  \end{tabularx}
+  \label{tab:auth}
+\end{table}
+
+%================================================================
+\chapter{Réalisation Technique}
+\label{chap:realisaton}
+%================================================================
+
+\section{Environnement de développement}
+
+\subsection{Infrastructure matérielle et logicielle}
+
+L'ensemble du développement a été réalisé sur un environnement local virtualisé avec Oracle VirtualBox~\cite{virtualbox}. Le tableau~\ref{tab:env} présente la configuration utilisée.
+
+\begin{table}[H]
+  \centering
+  \caption{Environnement de développement}
+  \begin{tabularx}{\linewidth}{@{}l X@{}}
+    \toprule
+    \textbf{Composant} & \textbf{Valeur / Version} \\
+    \midrule
+    Hyperviseur & Oracle VirtualBox \\
+    Base de données & Oracle Database Express Edition (XE) \\
+    Plateforme APEX & Oracle Application Express (APEX) \\
+    Serveur HTTP & Oracle REST Data Services (ORDS) \\
+    Schéma de travail & \texttt{HR} \\
+    Espace de travail APEX & \texttt{HR\_DEV} \\
+    URL de l'application & \texttt{http://localhost:8080/ords/apex} \\
+    SQL Developer Web & \texttt{http://localhost:8080/ords/hr/\_sdw/} \\
+    Navigateur & Mozilla Firefox / Google Chrome \\
+    \bottomrule
+  \end{tabularx}
+  \label{tab:env}
+\end{table}
+
+\subsection{Comptes utilisateurs APEX}
+
+\begin{table}[H]
+  \centering
+  \caption{Comptes APEX créés pour les tests}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    \textbf{Nom d'utilisateur} & \textbf{Rôle APEX} & \textbf{Rôle applicatif} \\
+    \midrule
+    \texttt{ADMIN}   & Administrator & Administrateur \\
+    \texttt{JMARTIN} & End User      & Technicien \\
+    \texttt{houssam} & End User (Reader) & Professeur \\
+    \bottomrule
+  \end{tabular}
+  \label{tab:comptes}
+\end{table}
+
+\section{Implémentation de la base de données}
+
+\subsection{Données initiales (seed)}
+
+Après la création des tables, les données de référence suivantes ont été insérées :
+
+\begin{lstlisting}[language=PLSQL, caption=Insertion des données de référence]
+-- Rôles
+INSERT INTO ROLES (NOM_ROLE, DESCRIPTION)
+VALUES ('Administrateur', 'Accès complet à toutes les fonctionnalités');
+INSERT INTO ROLES (NOM_ROLE, DESCRIPTION)
+VALUES ('Technicien', 'Gestion de ses propres interventions et rapports');
+INSERT INTO ROLES (NOM_ROLE, DESCRIPTION)
+VALUES ('Professeur', 'Peut demander des interventions aux techniciens');
+
+-- Utilisateurs
+INSERT INTO UTILISATEURS
+    (ROLE_ID, NOM, PRENOM, EMAIL, APEX_USERNAME)
+VALUES (1, 'Dupont', 'Admin', 'admin@univ.ma', 'ADMIN');
+
+INSERT INTO UTILISATEURS
+    (ROLE_ID, NOM, PRENOM, EMAIL, APEX_USERNAME)
+VALUES (2, 'Martin', 'Jean', 'jean.martin@univ.ma', 'JMARTIN');
+
+INSERT INTO UTILISATEURS
+    (ROLE_ID, NOM, PRENOM, EMAIL, APEX_USERNAME)
+VALUES (3, 'prof', 'houssam', 'houssam@prof.ma', 'houssam');
+
+COMMIT;
+\end{lstlisting}
+
+\subsection{Déclencheur TRG\_INTV\_STATUT}
+
+\begin{lstlisting}[language=PLSQL, caption=Déclencheur de contrôle des transitions de statut]
+CREATE OR REPLACE TRIGGER trg_intv_statut
+    BEFORE UPDATE OF STATUT ON INTERVENTIONS
+    FOR EACH ROW
+BEGIN
+    -- Règle 1 : interdiction de rouvrir une intervention terminée
+    IF :OLD.STATUT = 'Terminee'
+       AND :NEW.STATUT NOT IN ('Terminee', 'Annulee')
+    THEN
+        RAISE_APPLICATION_ERROR(-20010,
+            'Impossible de rouvrir une intervention Terminée. ' ||
+            'Contactez un administrateur pour l''annuler.');
+    END IF;
+
+    -- Règle 2 : horodatage automatique de la clôture
+    IF :NEW.STATUT = 'Terminee' AND :OLD.STATUT <> 'Terminee' THEN
+        :NEW.DATE_CLOTURE := SYSDATE;
+    END IF;
+END trg_intv_statut;
+/
+\end{lstlisting}
+
+\begin{remarque}
+Le déclencheur opère \texttt{BEFORE UPDATE}, ce qui permet de modifier les valeurs de la nouvelle ligne (\texttt{:NEW}) avant leur persistance en base~\cite{oracle_plsql}. C'est la seule façon en PL/SQL de renseigner automatiquement \texttt{DATE\_CLOTURE} lors d'une mise à jour de statut.
+\end{remarque}
+
+\subsection{Procédure SOUMETTRE\_RAPPORT}
+
+\begin{lstlisting}[language=PLSQL, caption=Procédure stockée de soumission de rapport]
+CREATE OR REPLACE PROCEDURE soumettre_rapport (
+    p_intervention_id IN NUMBER,
+    p_titre           IN VARCHAR2,
+    p_contenu         IN VARCHAR2,
+    p_temps_passe     IN NUMBER,
+    p_pieces          IN VARCHAR2
+) IS
+BEGIN
+    -- Validation du contenu
+    IF p_contenu IS NULL OR LENGTH(TRIM(p_contenu)) < 20 THEN
+        RAISE_APPLICATION_ERROR(-20050,
+            'Le contenu du rapport doit comporter au moins 20 caractères.');
+    END IF;
+
+    -- Insertion du rapport
+    INSERT INTO RAPPORTS (
+        INTERVENTION_ID, REDACTEUR, TITRE_RAPPORT,
+        CONTENU, TEMPS_PASSE_H, PIECES_UTILISEES
+    ) VALUES (
+        p_intervention_id,
+        V('APP_USER'),    -- utilisateur APEX courant
+        p_titre,
+        p_contenu,
+        p_temps_passe,
+        p_pieces
+    );
+
+    -- Transition de statut : Ouverte -> En cours
+    UPDATE INTERVENTIONS
+    SET    STATUT = 'En cours'
+    WHERE  INTERVENTION_ID = p_intervention_id
+      AND  STATUT = 'Ouverte';
+
+    COMMIT;
+EXCEPTION
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE;
+END soumettre_rapport;
+/
+\end{lstlisting}
+
+\subsection{Vérification de l'intégrité des objets}
+
+Après la création de tous les objets, il est conseillé d'exécuter la requête suivante pour s'assurer que tous les objets sont valides :
+
+\begin{lstlisting}[language=PLSQL, caption=Requête de vérification de l'intégrité]
+SELECT OBJECT_NAME, OBJECT_TYPE, STATUS
+FROM   USER_OBJECTS
+WHERE  OBJECT_NAME IN (
+    'ROLES','UTILISATEURS','INTERVENTIONS','RAPPORTS',
+    'TRG_INTV_STATUT','SOUMETTRE_RAPPORT'
+)
+ORDER BY OBJECT_TYPE, OBJECT_NAME;
+\end{lstlisting}
+
+Tous les objets doivent afficher le statut \texttt{VALID}.
+
+\section{Développement des pages APEX}
+
+\subsection{Page 1 — Accueil}
+
+La page d'accueil est la première page visible après la connexion. Elle est organisée en deux régions distinctes selon le rôle de l'utilisateur connecté.
+
+\subsubsection{Région statistiques globales (Administrateur)}
+
+Cette région, visible uniquement par les administrateurs, affiche les indicateurs suivants :
+\begin{itemize}[leftmargin=2em]
+  \item Nombre total d'interventions ;
+  \item Nombre d'interventions ouvertes ;
+  \item Nombre d'interventions en cours ;
+  \item Nombre d'interventions de priorité critique.
+\end{itemize}
+
+Ces valeurs sont calculées par un processus PL/SQL exécuté \textit{Before Header} et stockées dans des items de page cachés (\texttt{P1\_TOTAL}, \texttt{P1\_OUVERTES}, \texttt{P1\_EN\_COURS}, \texttt{P1\_CRITIQUES}).
+
+\subsubsection{Région Mes Interventions (Techniciens)}
+
+Cette région affiche, pour le technicien connecté, ses interventions actives triées par priorité (Critique en premier, puis Haute, Moyenne, Basse) :
+
+\begin{lstlisting}[language=PLSQL, caption=Requête SQL de la région Mes Interventions]
+SELECT I.INTERVENTION_ID, I.TITRE, I.PRIORITE, I.STATUT,
+       I.LOCALISATION, I.DATE_FIN_PREVUE
+FROM   INTERVENTIONS I
+JOIN   UTILISATEURS U ON U.UTILISATEUR_ID = I.TECHNICIEN_ID
+WHERE  UPPER(U.APEX_USERNAME) = UPPER(V('APP_USER'))
+  AND  I.STATUT NOT IN ('Terminee', 'Annulee')
+ORDER BY
+  CASE I.PRIORITE
+    WHEN 'Critique' THEN 1
+    WHEN 'Haute'    THEN 2
+    WHEN 'Moyenne'  THEN 3
+    WHEN 'Basse'    THEN 4
+  END;
+\end{lstlisting}
+
+\subsection{Page 3 — Interventions (Rapport interactif)}
+
+La page 3 présente un rapport interactif (Interactive Report) permettant à chaque utilisateur de consulter les interventions qui le concernent. Le filtrage est dynamique : les administrateurs voient toutes les interventions, les autres utilisateurs ne voient que les leurs.
+
+\begin{lstlisting}[language=PLSQL, caption=Requête SQL principale de la page Interventions]
+SELECT
+    I.INTERVENTION_ID, I.TITRE, I.PRIORITE, I.STATUT,
+    I.LOCALISATION, I.DATE_CREATION, I.DATE_FIN_PREVUE,
+    I.DATE_CLOTURE
+FROM INTERVENTIONS I
+JOIN UTILISATEURS U ON U.UTILISATEUR_ID = I.TECHNICIEN_ID
+WHERE UPPER(U.APEX_USERNAME) = UPPER(V('APP_USER'))
+   OR V('APP_USER') IN (
+        SELECT UPPER(U2.APEX_USERNAME)
+        FROM   UTILISATEURS U2
+        JOIN   ROLES R ON R.ROLE_ID = U2.ROLE_ID
+        WHERE  R.NOM_ROLE = 'Administrateur'
+      );
+\end{lstlisting}
+
+Un formatage visuel enrichit la lisibilité : des badges HTML colorés différencient les statuts et les priorités.
+
+\begin{table}[H]
+  \centering
+  \caption{Codes couleurs des badges de statut et de priorité}
+  \begin{tabular}{@{}llll@{}}
+    \toprule
+    \textbf{Statut} & \textbf{Couleur} & \textbf{Priorité} & \textbf{Couleur} \\
+    \midrule
+    Ouverte   & Bleu (info)       & Critique & Rouge (danger) \\
+    En cours  & Orange (warning)  & Haute    & Orange (warning) \\
+    Terminée  & Vert (success)    & Moyenne  & Bleu (info) \\
+    Annulée   & Rouge (danger)    & Basse    & Vert (success) \\
+    \bottomrule
+  \end{tabular}
+  \label{tab:badges}
+\end{table}
+
+\subsection{Page 7 — Demander une Intervention (Professeurs)}
+
+Cette page est réservée aux professeurs (schéma d'autorisation \texttt{Professeur Rights}). Elle présente un formulaire de saisie s'appuyant sur la table \texttt{INTERVENTIONS}.
+
+\subsubsection{Schéma d'autorisation Professeur Rights}
+
+\begin{lstlisting}[language=PLSQL, caption=Requête du schéma d'autorisation Professeur Rights]
+RETURN (
+    SELECT COUNT(*)
+    FROM   UTILISATEURS U
+    JOIN   ROLES R ON R.ROLE_ID = U.ROLE_ID
+    WHERE  UPPER(U.APEX_USERNAME) = UPPER(V('APP_USER'))
+      AND  R.NOM_ROLE = 'Professeur'
+) > 0;
+\end{lstlisting}
+
+\subsubsection{Items cachés}
+
+Plusieurs items cachés sont initialisés automatiquement lors de la soumission du formulaire :
+
+\begin{itemize}[leftmargin=2em]
+  \item \texttt{P7\_DEMANDE\_PAR\_PROF} : valeur par défaut \texttt{'Y'} ;
+  \item \texttt{P7\_STATUT\_ACCEPTATION} : valeur par défaut \texttt{'En attente'} ;
+  \item \texttt{P7\_STATUT} : valeur par défaut \texttt{'Ouverte'} ;
+  \item \texttt{P7\_CREE\_PAR} : valeur calculée \texttt{V('APP\_USER')}.
+\end{itemize}
+
+\subsection{Page 8 — Demandes en attente (Techniciens)}
+
+Cette page affiche au technicien connecté les demandes d'intervention en attente de sa décision. Elle repose sur un rapport classique (Classic Report) avec deux colonnes de lien permettant d'accepter ou de refuser chaque demande.
+
+\begin{lstlisting}[language=PLSQL, caption=Requête SQL de la page Demandes en attente]
+SELECT
+    I.INTERVENTION_ID,
+    I.TITRE,
+    I.PRIORITE,
+    I.LOCALISATION,
+    I.DATE_FIN_PREVUE,
+    U2.NOM || ' ' || U2.PRENOM AS "Demandé par"
+FROM INTERVENTIONS I
+JOIN UTILISATEURS U  ON U.UTILISATEUR_ID = I.TECHNICIEN_ID
+JOIN UTILISATEURS U2 ON UPPER(U2.APEX_USERNAME) = UPPER(I.CREE_PAR)
+WHERE UPPER(U.APEX_USERNAME) = UPPER(V('APP_USER'))
+  AND I.DEMANDE_PAR_PROF     = 'Y'
+  AND I.STATUT_ACCEPTATION   = 'En attente';
+\end{lstlisting}
+
+\subsubsection{Traitement de la décision}
+
+Lorsque le technicien clique sur « Accepter » ou « Refuser », une redirection est effectuée vers la même page avec des paramètres URL (\texttt{P8\_ID} et \texttt{P8\_ACTION}). Un processus PL/SQL exécuté \textit{Before Header} intercepte ces paramètres et met à jour la base de données :
+
+\begin{lstlisting}[language=PLSQL, caption=Processus Before Header de traitement de la décision]
+BEGIN
+    IF :P8_ACTION IS NOT NULL AND :P8_ID IS NOT NULL THEN
+        UPDATE INTERVENTIONS
+        SET    STATUT_ACCEPTATION = :P8_ACTION,
+               STATUT = CASE
+                            WHEN :P8_ACTION = 'Acceptee' THEN 'En cours'
+                            WHEN :P8_ACTION = 'Refusee'  THEN 'Annulee'
+                        END
+        WHERE  INTERVENTION_ID = :P8_ID;
+        COMMIT;
+    END IF;
+END;
+\end{lstlisting}
+
+\begin{remarque}
+L'utilisation d'un processus \textit{Before Header} (plutôt qu'un bouton de soumission classique) est une approche spécifique aux rapports classiques APEX~\cite{oracle_apex}. Les colonnes de lien effectuant une redirection d'URL (et non un \textit{submit} de formulaire), il est nécessaire d'intercepter les paramètres au chargement de la page suivante.
+\end{remarque}
+
+\subsection{Page 10 — Soumettre un Rapport}
+
+La page 10 permet la soumission d'un rapport technique. Elle appelle la procédure stockée \texttt{SOUMETTRE\_RAPPORT} via un processus PL/SQL personnalisé (le traitement automatique de ligne APEX a été supprimé).
+
+\begin{lstlisting}[language=PLSQL, caption=Appel de la procédure dans le processus APEX]
+BEGIN
+    soumettre_rapport(
+        p_intervention_id => :P10_INTERVENTION_ID,
+        p_titre           => :P10_TITRE_RAPPORT,
+        p_contenu         => :P10_CONTENU,
+        p_temps_passe     => :P10_TEMPS_PASSE_H,
+        p_pieces          => :P10_PIECES_UTILISEES
+    );
+END;
+\end{lstlisting}
+
+\subsection{Page 16 — Tableau de bord Administrateur}
+
+Le tableau de bord administrateur présente quatre cartes de statistiques (KPI cards) alimentées par un processus \textit{Before Header} :
+
+\begin{lstlisting}[language=PLSQL, caption=Processus Before Header du tableau de bord administrateur]
+BEGIN
+    SELECT COUNT(*)
+    INTO   :P16_TOTAL
+    FROM   INTERVENTIONS;
+
+    SELECT COUNT(*)
+    INTO   :P16_OUVERTES
+    FROM   INTERVENTIONS
+    WHERE  STATUT = 'Ouverte';
+
+    SELECT COUNT(*)
+    INTO   :P16_EN_COURS
+    FROM   INTERVENTIONS
+    WHERE  STATUT = 'En cours';
+
+    SELECT COUNT(*)
+    INTO   :P16_CRITIQUES
+    FROM   INTERVENTIONS
+    WHERE  PRIORITE = 'Critique'
+      AND  STATUT NOT IN ('Terminee', 'Annulee');
+END;
+\end{lstlisting}
+
+\section{Gestion du contrôle d'accès}
+
+\subsection{Mécanisme global}
+
+Le contrôle d'accès est implémenté à deux niveaux :
+
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{Niveau APEX (natif) :} chaque page est associée à un schéma d'autorisation APEX natif (\textit{Administration Rights} ou \textit{Contribution Rights}) ;
+  \item \textbf{Niveau base de données :} des schémas d'autorisation personnalisés interrogent directement la table \texttt{UTILISATEURS} pour vérifier le rôle métier de l'utilisateur connecté.
+\end{enumerate}
+
+\subsection{Menu de navigation conditionnel}
+
+Le menu de navigation affiche uniquement les entrées autorisées pour l'utilisateur courant. La correspondance entre entrées de menu et schémas d'autorisation est la suivante :
+
+\begin{table}[H]
+  \centering
+  \caption{Menu de navigation et autorisation associée}
+  \begin{tabularx}{\linewidth}{@{}l c X@{}}
+    \toprule
+    \textbf{Entrée du menu} & \textbf{Page} & \textbf{Schéma d'autorisation} \\
+    \midrule
+    Tableau de bord & 1 & (tous les utilisateurs) \\
+    Interventions & 3 & \texttt{Contribution Rights} \\
+    Demandes en attente & 8 & \texttt{Contribution Rights} \\
+    Soumettre un rapport & 10 & \texttt{Contribution Rights} \\
+    Demander une Intervention & 7 & \texttt{Professeur Rights} \\
+    Administration & 10000 & \texttt{Administration Rights} \\
+    \bottomrule
+  \end{tabularx}
+  \label{tab:menu}
+\end{table}
+
+\section{Tests et validation}
+
+\subsection{Validation des objets PL/SQL}
+
+La validation des objets PL/SQL a été effectuée à l'aide de la requête présentée dans la section précédente. Tous les objets (\texttt{ROLES}, \texttt{UTILISATEURS}, \texttt{INTERVENTIONS}, \texttt{RAPPORTS}, \texttt{TRG\_INTV\_STATUT}, \texttt{SOUMETTRE\_RAPPORT}) affichent le statut \texttt{VALID}.
+
+\subsection{Scénarios de test fonctionnels}
+
+\begin{table}[H]
+  \centering
+  \caption{Résultats des tests fonctionnels}
+  \begin{tabularx}{\linewidth}{@{}l X l@{}}
+    \toprule
+    \textbf{\#} & \textbf{Scénario} & \textbf{Résultat} \\
+    \midrule
+    T01 & Connexion avec chaque type de compte & \textcolor{green!60!black}{\textbf{OK}} \\
+    T02 & Professeur soumet une demande d'intervention & \textcolor{green!60!black}{\textbf{OK}} \\
+    T03 & Technicien accepte une demande & \textcolor{green!60!black}{\textbf{OK}} \\
+    T04 & Technicien refuse une demande & \textcolor{green!60!black}{\textbf{OK}} \\
+    T05 & Soumission d'un rapport valide & \textcolor{green!60!black}{\textbf{OK}} \\
+    T06 & Soumission d'un rapport avec contenu trop court & \textcolor{green!60!black}{\textbf{OK}} \\
+    T07 & Tentative de réouverture d'une intervention terminée & \textcolor{green!60!black}{\textbf{OK}} \\
+    T08 & Vérification des badges couleur sur la page 3 & \textcolor{green!60!black}{\textbf{OK}} \\
+    T09 & Accès à la page Admin par un non-administrateur & \textcolor{green!60!black}{\textbf{OK}} \\
+    T10 & Vérification des KPIs du tableau de bord & \textcolor{green!60!black}{\textbf{OK}} \\
+    \bottomrule
+  \end{tabularx}
+  \label{tab:tests}
+\end{table}
+
+%================================================================
+\chapter{Démonstration de l'Application}
+%================================================================
+
+\begin{important}
+Cette section sera complétée avec des captures d'écran annotées de l'application lors de sa présentation finale. Les sous-sections ci-dessous délimitent les différentes parties de la démonstration.
+\end{important}
+
+\section{Page de connexion}
+
+% [Capture d'écran à insérer : page de connexion APEX]
+
+\section{Tableau de bord administrateur (Page 16)}
+
+% [Capture d'écran à insérer : page 16 — KPI cards avec chiffres réels]
+
+\section{Liste des interventions (Page 3)}
+
+% [Capture d'écran à insérer : page 3 — Interactive Report avec badges colorés]
+
+\section{Formulaire de création d'intervention (Page 4)}
+
+% [Capture d'écran à insérer : page 4 — formulaire]
+
+\section{Demande d'intervention par un professeur (Page 7)}
+
+% [Capture d'écran à insérer : page 7 — formulaire professeur]
+
+\section{Gestion des demandes en attente (Page 8)}
+
+% [Capture d'écran à insérer : page 8 — liste des demandes avec boutons Accepter / Refuser]
+
+\section{Soumission d'un rapport (Page 10)}
+
+% [Capture d'écran à insérer : page 10 — formulaire de rapport]
+
+\section{Calendrier des interventions (Page 9)}
+
+% [Capture d'écran à insérer : page 9 — vue calendrier]
+
+\section{Accueil technicien (Page 1)}
+
+% [Capture d'écran à insérer : page 1 — région Mes Interventions pour JMARTIN]
+
+%================================================================
+\chapter*{Conclusion Générale}
+\addcontentsline{toc}{chapter}{Conclusion Générale}
+\markboth{Conclusion Générale}{}
+%================================================================
+
+\section*{Bilan des réalisations}
+
+Ce projet de fin de module a permis de mener à bien la conception et le développement d'un système complet de suivi des interventions techniques pour un établissement universitaire. L'ensemble des objectifs initiaux a été atteint :
+
+\begin{itemize}[leftmargin=2em]
+  \item Une base de données relationnelle robuste a été conçue, avec quatre tables principales, des contraintes d'intégrité rigoureuses et deux index d'optimisation ;
+  \item Un déclencheur PL/SQL (\texttt{TRG\_INTV\_STATUT}) garantit l'immuabilité des interventions terminées et l'horodatage automatique des clôtures ;
+  \item Une procédure stockée (\texttt{SOUMETTRE\_RAPPORT}) encapsule la logique métier de la soumission de rapports, avec validation et gestion des transitions de statut ;
+  \item L'application APEX comporte dix pages fonctionnelles couvrant l'ensemble du cycle de vie d'une intervention, des statistiques globales aux formulaires de saisie ;
+  \item Un système de contrôle d'accès à trois niveaux (APEX natif, schéma personnalisé, filtrage SQL) assure que chaque utilisateur n'accède qu'aux données et fonctionnalités qui lui sont autorisées.
+\end{itemize}
+
+\section*{Difficultés rencontrées}
+
+La principale difficulté rencontrée a été la mise en œuvre du mécanisme d'acceptation/refus des demandes de professeurs sur la page 8. La nature des rapports classiques APEX (qui effectuent des redirections d'URL plutôt que des \textit{submit} de formulaire) a nécessité d'adopter une approche originale : le traitement de la décision s'effectue via un processus \textit{Before Header}, interceptant les paramètres transmis dans l'URL. Cette solution, bien que non conventionnelle, s'est avérée robuste et fiable.
+
+Une autre difficulté a concerné la gestion du contexte utilisateur au sein des procédures PL/SQL. La fonction \texttt{V('APP\_USER')} d'APEX retourne le nom d'utilisateur courant de la session APEX, ce qui permet d'enregistrer automatiquement le rédacteur d'un rapport sans intervention manuelle de l'utilisateur.
+
+\section*{Perspectives d'amélioration}
+
+Plusieurs pistes d'amélioration pourraient être envisagées dans une version future de l'application :
+
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{Notifications par email :} envoyer automatiquement un email au technicien lorsqu'une nouvelle demande lui est adressée, et au professeur lorsque sa demande est acceptée ou refusée ;
+  \item \textbf{Pièces jointes :} permettre aux techniciens de joindre des photos ou des documents PDF à leurs rapports d'intervention, en exploitant les capacités de gestion de fichiers d'Oracle APEX ;
+  \item \textbf{Tableau de bord étendu :} enrichir le tableau de bord administrateur avec des graphiques (diagrammes en barres, courbes d'évolution) exploitant les composants de visualisation natifs d'APEX ;
+  \item \textbf{Déploiement cloud :} migrer l'application depuis un environnement VirtualBox local vers Oracle Cloud Infrastructure (OCI), en cohérence avec les compétences cloud de la filière DevOps ;
+  \item \textbf{API REST :} exposer les données d'intervention via les services REST d'ORDS~\cite{ords_guide} pour permettre leur consommation par des applications mobiles ou des outils de monitoring externes.
+\end{enumerate}
+
+\medskip
+
+Ce projet a constitué une occasion précieuse de mettre en pratique des compétences acquises tout au long de la formation : modélisation de bases de données relationnelles, programmation PL/SQL avancée, développement d'applications web de gestion, et mise en œuvre de mécanismes de sécurité. Il illustre concrètement comment Oracle APEX, combiné à la puissance du moteur Oracle, permet de développer rapidement des applications métier robustes, sécurisées et évolutives.
+
+%================================================================
+% BIBLIOGRAPHIE
+%================================================================
+\printbibliography[heading=bibintoc,title={Bibliographie}]
+
+%================================================================
+% ANNEXES
+%================================================================
+\appendix
+\chapter{Schéma complet de la base de données}
+\label{ann:schema}
+
+Le schéma complet de la base de données inclut toutes les tables, contraintes et index créés dans le cadre de ce projet. Voir les extraits de code SQL présentés au chapitre~\ref{chap:realisaton} (Chapitre 4).
+
+\chapter{Requête de vérification globale}
+\label{ann:verify}
+
+\begin{lstlisting}[language=PLSQL, caption=Vérification de l'état de tous les objets du schéma]
+-- Vérification des tables
+SELECT TABLE_NAME, NUM_ROWS
+FROM   USER_TABLES
+WHERE  TABLE_NAME IN ('ROLES','UTILISATEURS','INTERVENTIONS','RAPPORTS')
+ORDER BY TABLE_NAME;
+
+-- Vérification des objets PL/SQL
+SELECT OBJECT_NAME, OBJECT_TYPE, STATUS, LAST_DDL_TIME
+FROM   USER_OBJECTS
+WHERE  OBJECT_NAME IN (
+    'ROLES','UTILISATEURS','INTERVENTIONS','RAPPORTS',
+    'TRG_INTV_STATUT','SOUMETTRE_RAPPORT'
+)
+ORDER BY OBJECT_TYPE, OBJECT_NAME;
+
+-- Vérification des contraintes
+SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, TABLE_NAME, STATUS
+FROM   USER_CONSTRAINTS
+WHERE  TABLE_NAME IN ('ROLES','UTILISATEURS','INTERVENTIONS','RAPPORTS')
+ORDER BY TABLE_NAME, CONSTRAINT_TYPE;
+
+-- Vérification des index
+SELECT INDEX_NAME, TABLE_NAME, UNIQUENESS, STATUS
+FROM   USER_INDEXES
+WHERE  TABLE_NAME IN ('INTERVENTIONS','RAPPORTS')
+ORDER BY TABLE_NAME, INDEX_NAME;
+\end{lstlisting}
+
+\chapter{Configuration du contrôle d'accès APEX}
+\label{ann:access}
+
+\begin{table}[H]
+  \centering
+  \caption{Mapping complet des autorisations APEX}
+  \begin{tabularx}{\linewidth}{@{}l l X@{}}
+    \toprule
+    \textbf{Utilisateur APEX} & \textbf{Rôle APEX} & \textbf{Schémas applicables} \\
+    \midrule
+    \texttt{ADMIN}   & Administrator & Administration Rights, Contribution Rights \\
+    \texttt{JMARTIN} & End User & Contribution Rights \\
+    \texttt{houssam} & End User (Reader) & Contribution Rights, Professeur Rights \\
+    \bottomrule
+  \end{tabularx}
+  \label{tab:access-mapping}
+\end{table}
+
+\end{document}
